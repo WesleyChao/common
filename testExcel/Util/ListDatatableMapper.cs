@@ -69,16 +69,61 @@ namespace Qx.Util.Office
                     {
                         // 判断此属性是否有Setter     
                         if (!pi.CanWrite) continue;
-                        object value = dr[tempName];
-                        if (value != DBNull.Value)
-                        {
-                            pi.SetValue(t, value, null);
-                        }
+                        string value = dr[tempName].ToString();
+
+                        pi.SetValue(t, ToPriorityType(pi, value));
+                        // Type generactTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
+                        // if (generactTypeDefinition == typeof(Nullable<>))
+                        // {
+                        //     object obj = Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType));
+                        //     pi.SetValue(t, obj, null);
+                        // }
+
                     }
                 }
                 ts.Add(t);
             }
             return ts;
         }
+        //  将val 转换为 类的属性的 类型
+        private static object ToPriorityType(PropertyInfo field, string val)
+        {
+            object obj = null;
+            //if (!dic.Keys.Contains(field.Name))
+            //    continue;
+            //val = dic[field.Name];
+            object defaultVal;
+            if (field.PropertyType.Name.Equals("String"))
+            {
+                defaultVal = "";
+            }
+            else if (field.PropertyType.Name.Equals("Boolean"))
+            {
+                defaultVal = false;
+                val = (val.Equals("1") || val.Equals("on")).ToString();
+            }
+            else if (field.PropertyType.Name.Equals("Decimal"))
+            {
+                defaultVal = 0M;
+            }
+            else
+            {
+                defaultVal = 0;
+            }
+            if (!field.PropertyType.IsGenericType)
+            {
+                // 如果不是泛型类型, 直接转换
+                obj = string.IsNullOrEmpty(val) ? defaultVal : Convert.ChangeType(val, field.PropertyType);
+            }
+            else
+            {
+                Type genericTypeDefinition = field.PropertyType.GetGenericTypeDefinition();
+                if (genericTypeDefinition == typeof(Nullable<>))
+                    obj = string.IsNullOrEmpty(val) ? defaultVal : Convert.ChangeType(val, Nullable.GetUnderlyingType(field.PropertyType));
+            }
+            return obj;
+
+        }
+
     }
 }

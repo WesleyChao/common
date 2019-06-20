@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.IO;
-using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 namespace Qx.Util.Office
 {
@@ -10,10 +10,10 @@ namespace Qx.Util.Office
     {
 
         // 从DataTable 生成 Excel
-        public MemoryStream Export(DataTable dt)
+        public static MemoryStream Export(DataTable dt)
         {
-            HSSFWorkbook wb;
-            wb = new HSSFWorkbook();
+            XSSFWorkbook wb;
+            wb = new XSSFWorkbook();
 
             ISheet sheet1;
             sheet1 = wb.CreateSheet("sheet1");
@@ -36,9 +36,29 @@ namespace Qx.Util.Office
         }
 
         // 从 Excel 生成 DataTable
-        public DataTable Import(MemoryStream dt)
+        public static DataTable Import(MemoryStream dt)
         {
-            throw new NotImplementedException();
+            XSSFWorkbook wb = new XSSFWorkbook(dt);
+            ISheet sheet = wb.GetSheet("sheet1");
+            int rowsCount = sheet.PhysicalNumberOfRows; //取行Excel的最大行数
+            int colsCount = sheet.GetRow(0).PhysicalNumberOfCells;//取得Excel的列数
+
+            DataTable result = new DataTable();
+            for (int i = 0; i < colsCount; i++)
+            {
+                result.Columns.Add(new DataColumn(sheet.GetRow(0).GetCell(i).StringCellValue, Type.GetType("System.String")));
+            }
+            for (int rowIndex = 1; rowIndex < rowsCount; rowIndex++)
+            {
+                DataRow dr = result.NewRow();
+                for (int colIndex = 0; colIndex < colsCount; colIndex++)
+                {
+                    string t = sheet.GetRow(rowIndex).GetCell(colIndex).ToString();
+                    dr[colIndex] = t;
+                }
+                result.Rows.Add(dr);
+            }
+            return result;
         }
     }
 }
