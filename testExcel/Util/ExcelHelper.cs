@@ -18,22 +18,41 @@ namespace Qx.Util.Office
             ISheet sheet1;
             sheet1 = wb.CreateSheet("sheet1");
 
-            int rowCount = dt.Rows.Count;
+            int rowCount = dt.Rows.Count + 1;
             int colCount = dt.Columns.Count;
-            for (int i = 0; i < rowCount; i++)
-            {
-                DataRow row = dt.Rows[i];
-                for (int j = 0; j < colCount; j++)
-                {
 
-                }
+            // 创建表头
+            IRow titles = sheet1.CreateRow(0);
+            for (int i = 0; i < colCount; i++)
+            {
+                // 获取dt的表头
+                string title = dt.Columns[i].ColumnName;
+                ICell cell = titles.CreateCell(i);
+                cell.SetCellValue(title);
+                sheet1.AutoSizeColumn(i);
             }
 
 
-
-
-            throw new NotImplementedException();
+            for (int i = 1; i < rowCount; i++)
+            {
+                DataRow row = dt.Rows[i - 1];
+                IRow excelRow = sheet1.CreateRow(i);
+                for (int j = 0; j < colCount; j++)
+                {
+                    string content = row[j].ToString();
+                    ICell cell = excelRow.CreateCell(j);
+                    cell.SetCellValue(content);
+                }
+            }
+            NpoiMemoryStream result = new NpoiMemoryStream();
+            result.AllowClose = false;
+            wb.Write(result);
+            result.Flush();
+            result.Seek(0, SeekOrigin.Begin);
+            result.AllowClose = true;
+            return result;
         }
+
 
         // 从 Excel 生成 DataTable
         public static DataTable Import(MemoryStream dt)
@@ -59,6 +78,22 @@ namespace Qx.Util.Office
                 result.Rows.Add(dr);
             }
             return result;
+        }
+
+        public class NpoiMemoryStream : MemoryStream
+        {
+            public NpoiMemoryStream()
+            {
+                AllowClose = true;
+            }
+
+            public bool AllowClose { get; set; }
+
+            public override void Close()
+            {
+                if (AllowClose)
+                    base.Close();
+            }
         }
     }
 }

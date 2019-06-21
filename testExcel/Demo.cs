@@ -9,9 +9,17 @@ namespace Wesley.Demo
     {
         static string docPath = $@"{ Directory.GetCurrentDirectory()}\userfile\a.docx";
         static string docToPath = $@"{ Directory.GetCurrentDirectory()}\userfile\c.docx";
-        static string xlsPath = $@"{ Directory.GetCurrentDirectory()}\userfile\a.xlsx";
+        static string xlsPath = $@"{ Directory.GetCurrentDirectory()}\userfile\c.xlsx";
         static string xlsToPath = $@"{ Directory.GetCurrentDirectory()}\userfile\c.xlsx";
         public static void Main(string[] args)
+        {
+
+
+            导入Excel();
+            Console.WriteLine("ok");
+        }
+
+        public static void 导入Excel()
         {
             MemoryStream ms = null;
             using (FileStream fs = new FileStream(xlsPath, FileMode.Open, FileAccess.Read))
@@ -29,22 +37,31 @@ namespace Wesley.Demo
                 Console.WriteLine(s.ToString());
             }
 
-
-            Console.WriteLine("ok");
         }
 
         public static void 导出Excel()
         {
             List<Student> students = new List<Student>()
             {
-                new Student(){StuNo = "", Age = 10},
-
-
+                new Student(){StuNo = "111111", Age = 10, PhoneNum = "4321",Nationality = "Japan", Sex = 5},
+                new Student(){StuNo = "222222", Age = 20, PhoneNum = "1243",Nationality = "Japan", Sex = 4},
+                new Student(){StuNo = "333333", Age = 30, PhoneNum = "4321",Nationality = "Japan", Sex = 3},
+                new Student(){StuNo = "444444", Age = 10, PhoneNum = "1234",Nationality = "Japan", Sex = 2},
             };
+
+            DataTable td = ListDatatableMapper<Student>.ListToDataTable(students);
 
 
             // xlsToPath
-
+            using (MemoryStream ms = ExcelHelper.Export(td))
+            {
+                using (FileStream fs = new FileStream(xlsToPath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    byte[] bytes = new byte[ms.Length];
+                    ms.Read(bytes, 0, bytes.Length);
+                    fs.Write(bytes, 0, bytes.Length);
+                }
+            }
 
         }
 
