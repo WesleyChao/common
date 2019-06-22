@@ -10,6 +10,18 @@ namespace Qx.Util.Office
 {
     public class ListDatatableMapper<T> where T : new()
     {
+
+        /// <summary>
+        ///  用来实现 DataTable 与 List<T> 之间的转换
+        ///  其实可以用 System.Json 通过转化为Json作为桥梁, 而不使用下面两个方法 , 但是没有测试效率如何
+        /*List<Staff> staffs = new List<Staff>()     { new Staff(){StaffNo = "123", EmailAddress="123@abc", NameInEnglish = "Sam", NameNativeLanguage ="hello", Section = "se01" },    };
+            // List 序列化为json
+            string st = staffs.SerializeToJson();
+            // json反序列化为 Datatable
+            DataTable dataTable = st.DeserializeToObject<DataTable>();
+            // 反之亦然
+            dataTable.Print(); */
+        /// </summary>
         public static DataTable ListToDataTable(List<T> entitys)
         {
 
@@ -125,5 +137,33 @@ namespace Qx.Util.Office
 
         }
 
+    }
+    public static class DataTableExtension
+    {
+        public static void Print(this DataTable dt)
+        {
+            int rowCount = dt.Rows.Count + 1;
+            int colCount = dt.Columns.Count;
+
+            // 创建表头
+            for (int i = 0; i < colCount; i++)
+            {
+                // 获取dt的表头
+                string title = dt.Columns[i].ColumnName;
+                Console.Write($"{title}\t\t");
+            }
+            Console.WriteLine();
+
+            for (int i = 1; i < rowCount; i++)
+            {
+                DataRow row = dt.Rows[i - 1];
+                for (int j = 0; j < colCount; j++)
+                {
+                    string content = row[j].ToString();
+                    Console.Write($"{content}\t\t");
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }
