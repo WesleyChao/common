@@ -1,0 +1,50 @@
+//创建项目
+dotnet new mvc -o projectName
+
+// 在 Visual Studio Code 中加载 MvcMovie.csproj 项目文件
+code -r MvcMovie
+
+//通过运行以下命令来信任 HTTPS 开发证书：
+dotnet dev-certs https --trust
+
+//运行
+dotnet run
+
+// build
+dotnet build
+
+// 修复, 回复
+dotnet restorels
+
+// 添加 ef core
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+
+dotnet new --help
+
+
+1. 安装sql server 提供的驱动
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+// 添加 ef core
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+2. 获取net core cli 工具
+    .net core cli 工具在装sdk时候已经包含， 需要使用下面命令来在指定项目启动
+
+    dotnet add package Microsoft.EntityFrameworkCore.Design
+
+3. 数据库的迁移
+    dotnet ef migrations add InitialCreate 以 未数据库初始化
+    dotnet ef database update 将新的迁移应用到数据库中
+    dotnet ef migrations add <NAME> 为新的迁移搭建基架， 一般基建搭建完毕后， 会接着跟 dotnet ef database update 来应用
+
+4. 如果数据库存在，可以使用反向工程（更具数据库生成 model 和 dbContext）
+		在ngGet的控制台里面可以  运行下面命令 ，生成model，  并且可以指定-Tables blogs,post  指定需要哪些表
+		Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=Blogging;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+		
+		或者在vs code 里面输入  , 这句话依赖于 Microsoft.EntityFrameworkCore.Design
+		dotnet ef dbcontext scaffold "Data Source=localhost;User ID=sa;Password=123456;Initial Catalog=efCoreMVC;" Microsoft.EntityFrameworkCore.SqlServer -o Models
+
+
+		//dotnet ef dbcontext scaffold "Data Source=192.168.31.66;User ID=sa;Password=QxamoySQL666;Initial Catalog=HAECO_TEACH;" Microsoft.EntityFrameworkCore.SqlServer -o Entity
+		//dotnet ef dbcontext scaffold "Data Source=qxamoy.com,10385;User ID=sa;Password=QxamoySQL666;Initial Catalog=HAECO_TEACH;" Microsoft.EntityFrameworkCore.SqlServer -o Entity
+
+		
