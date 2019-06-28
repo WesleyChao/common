@@ -21,6 +21,10 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 
 dotnet new --help
 
+// 添加本地项目引用
+dotnet add app/app.csproj reference lib/lib.csproj  	-如何添加项目引用
+dotnet list reference 									- 列出项目到项目引用。
+dotnet remove app/app.csproj reference lib/lib.csproj   -移除引用
 
 1. 安装sql server 提供的驱动
 Install-Package Microsoft.EntityFrameworkCore.SqlServer
@@ -47,4 +51,4 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 		//dotnet ef dbcontext scaffold "Data Source=192.168.31.66;User ID=sa;Password=QxamoySQL666;Initial Catalog=HAECO_TEACH;" Microsoft.EntityFrameworkCore.SqlServer -o Entity
 		//dotnet ef dbcontext scaffold "Data Source=qxamoy.com,10385;User ID=sa;Password=QxamoySQL666;Initial Catalog=HAECO_TEACH;" Microsoft.EntityFrameworkCore.SqlServer -o Entity
 
-		
+

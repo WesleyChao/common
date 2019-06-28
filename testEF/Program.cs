@@ -15,19 +15,24 @@ namespace testEF
             using (efCoreMVCContext DB = new efCoreMVCContext())
             {
 
-                List<Course> c = DB.Course.ToList();
-                // CourseType cy = DB.CourseTypes.Single();
-                CourseType ct = DB.CourseTypes.First(u => u.CourseTypeID == "1");
-                DB.CourseTypes.Remove(ct);
-                Console.WriteLine(DB.Entry(ct).State);
-                Console.WriteLine(DB.Entry(c.First()).State);
-                Console.WriteLine(DB.Entry(c.First().CourseType).State);
+                // List<Course> c = DB.Course.ToList();
+                // // CourseType cy = DB.CourseTypes.Single();
+                // CourseType ct = DB.CourseTypes.First(u => u.CourseTypeID == "1");
+                // DB.CourseTypes.Remove(ct);
+                // Console.WriteLine(DB.Entry(ct).State);
+                // Console.WriteLine(DB.Entry(c.First()).State);
+                // Console.WriteLine(DB.Entry(c.First().CourseType).State);
 
-                DB.SaveChanges();
-                Console.WriteLine(DB.Entry(ct).State);
-                Console.WriteLine(DB.Entry(c.First()).State);
-                Console.WriteLine(DB.Entry(c.First().CourseType).State);
+                // DB.SaveChanges();
+                // Console.WriteLine(DB.Entry(ct).State);
+                // Console.WriteLine(DB.Entry(c.First()).State);
+                // Console.WriteLine(DB.Entry(c.First().CourseType).State);
 
+                CourseInstance c = DB.Set<CourseInstance>().Include(u => u.Course.CourseType).Single(u => u.InstanceID == "1");
+                CourseInstance c1 = DB.Set<CourseInstance>().Include(u => u.Course.CourseType).Single(u => u.InstanceID == "2");
+
+                Console.WriteLine(c.Course.CourseType.GetHashCode());
+                Console.WriteLine(c1.Course.CourseType.GetHashCode());
 
 
             }
