@@ -45,10 +45,10 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 		Scaffold-DbContext "Server=(localdb)\mssqllocaldb;Database=Blogging;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 		
 		或者在vs code 里面输入  , 这句话依赖于 Microsoft.EntityFrameworkCore.Design
-		dotnet ef dbcontext scaffold "Data Source=localhost;User ID=sa;Password=123456;Initial Catalog=efCoreMVC;" Microsoft.EntityFrameworkCore.SqlServer -o Models
+		dotnet ef dbcontext scaffold "Data Source=localhost;User ID=sa;Password=123456;Initial Catalog=ArrangeCourse;" Microsoft.EntityFrameworkCore.SqlServer -o Models
 
 
 		//dotnet ef dbcontext scaffold "Data Source=192.168.31.66;User ID=sa;Password=QxamoySQL666;Initial Catalog=HAECO_TEACH;" Microsoft.EntityFrameworkCore.SqlServer -o Entity
 		//dotnet ef dbcontext scaffold "Data Source=qxamoy.com,10385;User ID=sa;Password=QxamoySQL666;Initial Catalog=HAECO_TEACH;" Microsoft.EntityFrameworkCore.SqlServer -o Entity
-
-
+		-- 当创建的项目是classlib 项目的时候, 需要指明 --startup-project, 此时..\qx.replaceInst\qx.replaceInst.csproj, 必须要引用到 添加到的类库文件
+		dotnet ef --startup-project ..\qx.replaceInst\qx.replaceInst.csproj dbcontext scaffold "Data Source=localhost;User ID=sa;Password=123456;Initial Catalog=ArrangeCourse;" Microsoft.EntityFrameworkCore.SqlServer -o model
